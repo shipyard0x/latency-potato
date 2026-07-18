@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-cream text-ink font-sans;
+}
+
+.micro {
+  @apply text-[11px] font-bold uppercase text-spud-dark;
+  letter-spacing: 0.14em;
+}
+
+.pressable {
+  @apply transition active:translate-x-[3px] active:translate-y-[3px] active:shadow-none;
+}

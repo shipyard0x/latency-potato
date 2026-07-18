@@ -1,0 +1,11 @@
+{
+  "name": "potato-sniper",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": { "snipe": "node sniper.js" },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "viem": "^2.21.0",
+    "ws": "^8.18.0"
+  }
+}

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Latency Potato — don't get mashed</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream:#FBF2E2; --cream2:#F3E4C8; --spud:#C68B4E; --spud-d:#8C5A2B;
+    --spud-deep:#4A2E14; --butter:#FFC93C; --butter-d:#E8A800; --grass:#5FB84F;
+    --grass-d:#3E8E41; --tomato:#E8503A; --ink:#221507;
+  }
+  * { margin:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--cream); color:var(--ink); font-family:'Space Grotesk',sans-serif; }
+  .px { font-family:'Press Start 2P',monospace; }
+  .micro { font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--spud-d); }
+
+  /* ---------- ticker ---------- */
+  .ticker { background:var(--ink); color:var(--cream); overflow:hidden; white-space:nowrap; border-bottom:3px solid var(--ink); }
+  .ticker-inner { display:inline-block; padding:7px 0; font-size:13px; font-weight:500; letter-spacing:.06em; animation:tick 22s linear infinite; }
+  .ticker b { color:var(--butter); }
+  @keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ---------- nav ---------- */
+  nav { display:flex; align-items:center; justify-content:space-between; max-width:1100px; margin:0 auto; padding:18px 24px; }
+  .logo { display:flex; align-items:center; gap:12px; }
+  .logo .px { font-size:14px; color:var(--spud-deep); line-height:1.5; }
+  .navlinks { display:flex; gap:28px; font-weight:500; font-size:15px; }
+  .navlinks a { color:var(--spud-d); text-decoration:none; }
+  .navlinks a:hover, .navlinks a.on { color:var(--ink); text-decoration:underline; text-underline-offset:5px; text-decoration-thickness:3px; text-decoration-color:var(--butter); }
+  .wallet { font-weight:700; font-size:14px; background:#fff; border:3px solid var(--ink); border-radius:99px; padding:9px 18px; box-shadow:3px 3px 0 var(--ink); cursor:pointer; }
+  .wallet:active { transform:translate(3px,3px); box-shadow:none; }
+
+  /* ---------- hero ---------- */
+  .hero { max-width:1100px; margin:14px auto 0; padding:0 24px; display:grid; grid-template-columns:1.3fr .9fr; gap:36px; align-items:center; }
+  h1 { font-size:52px; line-height:1.04; font-weight:700; letter-spacing:-.02em; }
+  h1 .hl { background:var(--butter); padding:0 8px; border-radius:6px; box-decoration-break:clone; }
+  .sub { font-size:17px; color:var(--spud-d); margin:14px 0 22px; max-width:44ch; line-height:1.5; }
+
+  .timerbox { display:inline-flex; align-items:baseline; gap:14px; background:#fff; border:3px solid var(--ink); border-radius:14px; padding:14px 20px; box-shadow:5px 5px 0 var(--ink); margin-bottom:20px; }
+  .timerbox .lab { font-size:11px; font-weight:700; letter-spacing:.12em; color:var(--spud-d); }
+  #clock { font-family:'Press Start 2P',monospace; font-size:30px; color:var(--spud-deep); font-variant-numeric:tabular-nums; }
+  #clock small { font-size:19px; }
+
+  .ctarow { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  #grab { font-family:'Press Start 2P',monospace; font-size:15px; color:var(--ink); background:var(--butter); border:4px solid var(--ink); border-radius:16px; padding:20px 28px; box-shadow:6px 6px 0 var(--ink); cursor:pointer; transition:transform .05s, box-shadow .05s; }
+  #grab:hover { background:var(--butter-d); }
+  #grab:active { transform:translate(6px,6px); box-shadow:none; }
+  .price { font-size:15px; }
+  .price b { font-size:19px; }
+  .price span { color:var(--spud-d); }
+  .paytoggle { display:inline-flex; border:3px solid var(--ink); border-radius:99px; overflow:hidden; background:#fff; font-size:13px; font-weight:700; margin-top:14px; }
+  .paytoggle div { padding:8px 16px; cursor:pointer; }
+  .paytoggle .on { background:var(--grass); }
+
+  /* ---------- mascot ---------- */
+  .mascotcard { position:relative; background:var(--cream2); border:4px solid var(--ink); border-radius:24px; box-shadow:8px 8px 0 var(--ink); padding:26px; transform:rotate(1.6deg); }
+  .mascotcard canvas { display:block; margin:0 auto; image-rendering:pixelated; }
+  .sticker { position:absolute; top:-16px; right:-14px; background:var(--tomato); color:#fff; font-weight:700; font-size:13px; letter-spacing:.05em; border:3px solid var(--ink); border-radius:99px; padding:8px 14px; transform:rotate(7deg); box-shadow:3px 3px 0 var(--ink); }
+  .holderline { text-align:center; margin-top:16px; font-size:15px; color:var(--spud-d); }
+  .holderline b { color:var(--ink); font-size:17px; }
+  .streak { display:block; font-size:13px; margin-top:2px; }
+
+  /* ---------- stats strip ---------- */
+  .stats { max-width:1100px; margin:44px auto 0; padding:0 24px; display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:0; border:4px solid var(--ink); border-radius:18px; overflow:hidden; background:#fff; box-shadow:6px 6px 0 var(--ink); }
+  .stat { padding:20px 24px; border-right:3px solid var(--ink); }
+  .stat:last-child { border-right:none; }
+  .stat .v { font-size:30px; font-weight:700; letter-spacing:-.01em; margin-top:4px; }
+  .stat.jack { background:var(--butter); }
+  .stat.jack .micro { color:var(--spud-deep); }
+  .stat .d { font-size:13px; color:var(--spud-d); margin-top:2px; }
+
+  /* ---------- lower grid ---------- */
+  .lower { max-width:1100px; margin:40px auto; padding:0 24px; display:grid; grid-template-columns:1.15fr .85fr; gap:24px; }
+  .term { background:#2A1A0B; border:4px solid var(--ink); border-radius:16px; box-shadow:6px 6px 0 var(--ink); overflow:hidden; }
+  .term .bar { display:flex; align-items:center; gap:6px; background:#3A2412; padding:10px 14px; border-bottom:3px solid var(--ink); }
+  .term .dot { width:11px; height:11px; border-radius:50%; border:2px solid var(--ink); }
+  .term .bar span:last-child { margin-left:10px; color:#D9BF95; font-size:12px; font-weight:700; letter-spacing:.1em; }
+  #feed { padding:12px 16px; height:250px; overflow:hidden; font-family:ui-monospace,'Cascadia Mono',Menlo,monospace; font-size:12.5px; line-height:1.65; color:#EADFC8; }
+  #feed .t { color:#7FA46B; } #feed .s { color:#B98A55; } #feed .hot { color:var(--butter); font-weight:700; }
+
+  .board { background:#fff; border:4px solid var(--ink); border-radius:16px; box-shadow:6px 6px 0 var(--ink); padding:20px 22px; }
+  .board table { width:100%; border-collapse:collapse; font-size:14.5px; margin-top:12px; }
+  .board th { text-align:left; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--spud-d); padding:6px 8px; border-bottom:3px solid var(--ink); }
+  .board td { padding:9px 8px; border-bottom:1px dashed rgba(34,21,7,.25); }
+  .board tr.first td { background:var(--butter); font-weight:700; }
+  .board tr.first td:first-child { border-radius:8px 0 0 8px; } .board tr.first td:last-child { border-radius:0 8px 8px 0; }
+  .board .addr { font-family:ui-monospace,Menlo,monospace; font-size:13.5px; }
+
+  footer { border-top:3px solid var(--ink); background:var(--cream2); margin-top:20px; }
+  .foot { max-width:1100px; margin:0 auto; padding:22px 24px; display:flex; justify-content:space-between; align-items:center; font-size:13.5px; color:var(--spud-d); flex-wrap:wrap; gap:10px; }
+  .foot a { color:var(--spud-d); margin-left:18px; }
+  .chainbadge { display:inline-flex; align-items:center; gap:7px; background:#fff; border:2px solid var(--ink); border-radius:99px; padding:5px 12px; font-weight:700; color:var(--ink); }
+  .chainbadge i { width:8px; height:8px; border-radius:50%; background:var(--grass); display:inline-block; }
+
+  @media (max-width:900px){ .hero,.lower{grid-template-columns:1fr} .stats{grid-template-columns:1fr 1fr} h1{font-size:38px} }
+</style>
+</head>
+<body>
+
+<div class="ticker"><div class="ticker-inner" id="ticker"></div></div>
+
+<nav>
+  <div class="logo">
+    <canvas id="logopx" width="56" height="56"></canvas>
+    <div class="px">LATENCY<br>POTATO</div>
+  </div>
+  <div class="navlinks">
+    <a class="on" href="#">Play</a><a href="#">Leaderboard</a><a href="#">How it works</a><a href="#">$POTATO</a>
+  </div>
+  <button class="wallet">Connect wallet</button>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="micro">Round #47 · live on Robinhood Chain</div>
+    <h1>Don't hold the bag.<br><span class="hl">Hold the potato.</span></h1>
+    <p class="sub">Every grab bumps the price 10% and hands the last farmer their money back plus 5%. Timer hits zero while you're holding? Half the pot is yours. Blocks land every 100ms — first come, first served, no gas wars.</p>
+    <div class="timerbox">
+      <span class="lab">GOES COLD IN</span>
+      <span id="clock">00:22:<small>417</small></span>
+    </div>
+    <div class="ctarow">
+      <button id="grab">GRAB THE POTATO</button>
+      <div class="price"><b>0.00806 ETH</b><br><span>next price 0.00887 · you get back 0.00847</span></div>
+    </div>
+    <div class="paytoggle"><div class="on">Pay with ETH</div><div>Pay with $POTATO −5%</div></div>
+  </div>
+
+  <div class="mascotcard">
+    <div class="sticker">HOT!</div>
+    <canvas id="mascot" width="280" height="280"></canvas>
+    <div class="holderline">
+      currently held by <b>0x7aB4…9fE2</b>
+      <span class="streak">3rd grab this round · holding for 7.6s</span>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stat jack">
+    <div class="micro">Jackpot pool</div>
+    <div class="v">1.3374 ETH</div>
+    <div class="d" style="color:var(--spud-deep)">50% to the winner · 40% rolls over</div>
+  </div>
+  <div class="stat"><div class="micro">Round</div><div class="v">#47</div><div class="d">12 grabs so far</div></div>
+  <div class="stat"><div class="micro">Burned</div><div class="v">2.41M</div><div class="d">$POTATO gone forever</div></div>
+  <div class="stat"><div class="micro">Block time</div><div class="v">100ms</div><div class="d">FCFS · no priority gas</div></div>
+</section>
+
+<section class="lower">
+  <div class="term">
+    <div class="bar">
+      <span class="dot" style="background:var(--tomato)"></span>
+      <span class="dot" style="background:var(--butter)"></span>
+      <span class="dot" style="background:var(--grass)"></span>
+      <span>SEQUENCER FEED — wss://feed.mainnet.chain.robinhood.com</span>
+    </div>
+    <div id="feed"></div>
+  </div>
+  <div class="board">
+    <div class="micro">Hall of farm — all time</div>
+    <table>
+      <tr><th>#</th><th>Farmer</th><th>Wins</th><th>Harvested</th></tr>
+      <tr class="first"><td>1</td><td class="addr">0x7aB4…9fE2</td><td>12</td><td>4.2091 ETH</td></tr>
+      <tr><td>2</td><td class="addr">0x11Fe…77aC</td><td>9</td><td>2.8830 ETH</td></tr>
+      <tr><td>3</td><td class="addr">0xD00d…BEEF</td><td>7</td><td>1.9902 ETH</td></tr>
+      <tr><td>4</td><td class="addr">0xB0B0…1337</td><td>4</td><td>0.7215 ETH</td></tr>
+      <tr><td>5</td><td class="addr">0xAce5…0420</td><td>2</td><td>0.3108 ETH</td></tr>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <div class="foot">
+    <span>Latency Potato · a latency race, not financial advice · game contract <span style="font-family:ui-monospace,Menlo,monospace">0x0000…0000</span></span>
+    <span>
+      <span class="chainbadge"><i></i>Robinhood Chain · 4663</span>
+      <a href="#">Docs</a><a href="#">GitHub</a><a href="#">X</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+/* ---------- pixel potato mascot (hand-mapped sprite) ---------- */
+var SPRITE = [
+  '......GG......',
+  '.....GG.......',
+  '....XXXX......',
+  '..XX C  XX....',
+  '.X  C     X...',
+  '.X         X..',
+  'X    B  B   X.',
+  'X    B  B   X.',
+  'X           X.',
+  'X  C        X.',
+  'X    BBBB   X.',
+  '.X    BB   X..',
+  '.X        C X.',
+  '..XX      XX..',
+  '....XXXXXX....',
+  '..............'
+];
+var PAL = { X:'#221507', B:'#221507', C:'#8C5A2B', G:'#3E8E41', ' ':'#C68B4E', '.':null };
+function drawSprite(canvasId, cell){
+  var cv = document.getElementById(canvasId), cx = cv.getContext('2d');
+  for (var y=0; y<SPRITE.length; y++)
+    for (var x=0; x<SPRITE[y].length; x++){
+      var c = PAL[SPRITE[y][x]];
+      if (c){ cx.fillStyle = c; cx.fillRect(x*cell, y*cell, cell, cell); }
+    }
+}
+drawSprite('mascot', 20);
+drawSprite('logopx', 4);
+
+/* ---------- ticker ---------- */
+var items = 'JACKPOT <b>1.3374 ETH</b> &nbsp;◆&nbsp; LAST GRAB <b>0x7aB4…9fE2</b> +5% &nbsp;◆&nbsp; ROUND <b>#47</b> &nbsp;◆&nbsp; <b>2.41M $POTATO</b> BURNED &nbsp;◆&nbsp; BLOCKS EVERY <b>100MS</b> &nbsp;◆&nbsp; ';
+document.getElementById('ticker').innerHTML = items + items + items + items;
+
+/* ---------- countdown ---------- */
+var end = Date.now() + 22417, clock = document.getElementById('clock');
+(function tick(){
+  var ms = end - Date.now();
+  if (ms <= 0){ end = Date.now() + 30000; ms = 30000; }
+  clock.innerHTML = String(Math.floor(ms/60000)).padStart(2,'0') + ':' +
+    String(Math.floor(ms%60000/1000)).padStart(2,'0') +
+    ':<small>' + String(Math.floor(ms%1000)).padStart(3,'0') + '</small>';
+  clock.style.color = ms < 5000 ? 'var(--tomato)' : 'var(--spud-deep)';
+  requestAnimationFrame(tick);
+})();
+
+/* ---------- fake feed ---------- */
+var feed = document.getElementById('feed'), seq = 8842317;
+var samples = [
+  ['transfer', '0.0120 ETH'], ['swap', 'POTATO → WETH'], ['grab', '0x11Fe…77aC pays 0.00733'],
+  ['approve', 'POTATO ∞'], ['transfer', '0.5000 ETH'], ['grab', '0x7aB4…9fE2 pays 0.00806'],
+  ['mint', '#4471'], ['swap', 'USDG → WETH']
+];
+(function addLine(){
+  var t = new Date(), pick = samples[Math.floor(Math.random()*samples.length)];
+  var d = document.createElement('div');
+  var stamp = t.toLocaleTimeString('en-GB') + '.' + String(t.getMilliseconds()).padStart(3,'0');
+  d.innerHTML = '<span class="t">' + stamp + '</span> <span class="s">#' + (seq++) + '</span> ' +
+    (pick[0] === 'grab'
+      ? '<span class="hot">takePotato() ' + pick[1] + '</span>'
+      : pick[0] + ' ' + pick[1]);
+  feed.appendChild(d);
+  while (feed.children.length > 12) feed.removeChild(feed.firstChild);
+  setTimeout(addLine, 130 + Math.random()*280);
+})();
+</script>
+</body>
+</html>
