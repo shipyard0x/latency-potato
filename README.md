@@ -1,4 +1,4 @@
-# 🥔⚡ 100ms Latency Potato — Robinhood Chain (ID 4663)
+# Latency Potato
 
 A hot-potato latency race for a chain with **100ms blocks and strict FCFS
 sequencing** — no priority gas auction, so the only edge is wire speed.
