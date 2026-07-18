@@ -59,12 +59,25 @@ export default function App() {
           <a href="#board" className="hover:text-ink">Leaderboard</a>
           <a href="#how" className="hover:text-ink">How it works</a>
         </div>
-        <button
-          onClick={() => (isConnected ? disconnect() : connect({ connector: injected() }))}
-          className="pressable font-bold text-sm bg-white border-[3px] border-ink rounded-full px-4 py-2 shadow-chunk"
-        >
-          {isConnected ? short(address) : 'Connect wallet'}
-        </button>
+        <div className="flex items-center gap-3">
+          <a
+            href="https://x.com/LatencyPotato"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Latency Potato on X"
+            className="pressable bg-white border-[3px] border-ink rounded-full p-2.5 shadow-chunk hover:bg-cream-dark"
+          >
+            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-ink" aria-hidden="true">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644z" />
+            </svg>
+          </a>
+          <button
+            onClick={() => (isConnected ? disconnect() : connect({ connector: injected() }))}
+            className="pressable font-bold text-sm bg-white border-[3px] border-ink rounded-full px-4 py-2 shadow-chunk"
+          >
+            {isConnected ? short(address) : 'Connect wallet'}
+          </button>
+        </div>
       </nav>
 
       {/* ---------------------------------------------- hero */}
