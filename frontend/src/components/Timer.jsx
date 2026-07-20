@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
  * Inline countdown chip — ms resolution via requestAnimationFrame,
  * flips tomato-red under 5s.
  */
-export default function Timer({ roundEndTime }) {
+export default function Timer({ roundEndTime, idle = false }) {
   const [msLeft, setMsLeft] = useState(0);
   const raf = useRef();
 
@@ -26,7 +26,7 @@ export default function Timer({ roundEndTime }) {
   return (
     <div className="inline-flex items-baseline gap-3.5 bg-white border-[3px] border-ink rounded-xl px-5 py-3 shadow-chunk-md mb-5">
       <span className="text-[11px] font-bold tracking-[.12em] text-spud-dark">
-        {msLeft === 0 ? 'ROUND OVER' : 'GOES COLD IN'}
+        {msLeft === 0 ? (idle ? 'GRAB TO START' : 'ROUND OVER') : 'GOES COLD IN'}
       </span>
       <span
         className={`font-pixel text-2xl md:text-3xl tabular-nums ${danger ? 'text-tomato' : 'text-spud-deep'}`}

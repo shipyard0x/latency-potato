@@ -1,7 +1,7 @@
 import { useAccount, useConnect, useDisconnect, useReadContracts } from 'wagmi';
 import { injected } from 'wagmi/connectors';
 import { formatEther } from 'viem';
-import { GAME_ADDRESS, IS_CONFIGURED } from './config';
+import { GAME_ADDRESS, IS_CONFIGURED, BASE_PRICE } from './config';
 import { gameAbi } from './abi';
 import PixelPotato from './components/PixelPotato';
 import Timer from './components/Timer';
@@ -39,6 +39,17 @@ export default function App() {
   // BigInt child (it comes out blank) — only template literals coerce it.
   const roundLabel = round != null ? round.toString() : '…';
   const tickerItems = `JACKPOT ${jackpotFmt} ETH ◆ HOLDER ${short(holder)} ◆ ROUND #${roundLabel} ◆ BLOCKS EVERY 100MS ◆ `;
+
+  // When a round has expired but not yet been settled, takePotato() settles it
+  // first and resets currentPrice to BASE_PRICE before checking msg.value — so
+  // paying the displayed (stepped) price reverts with WrongPayment. In that
+  // state the next ETH grab opens a fresh round at BASE_PRICE, so that's what
+  // we must send/show. BASE_PRICE is a Solidity constant (0.005 ether).
+  const roundOver =
+    holder && holder !== '0x0000000000000000000000000000000000000000' &&
+    endTime != null && Date.now() / 1000 > Number(endTime);
+  const noHolder = !holder || holder === '0x0000000000000000000000000000000000000000';
+  const effectiveEthPrice = roundOver || noHolder ? BASE_PRICE : price;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -96,8 +107,8 @@ export default function App() {
             back plus 5%. Timer hits zero while you're holding? Half the pot is
             yours. Blocks land every 100ms — first come, first served, no gas wars.
           </p>
-          <Timer roundEndTime={endTime} />
-          <TakeButton priceEth={price} pricePotato={potatoPrice} />
+          <Timer roundEndTime={endTime} idle={roundOver || noHolder} />
+          <TakeButton priceEth={effectiveEthPrice} pricePotato={potatoPrice} />
         </div>
 
         <div className="relative bg-cream-dark border-4 border-ink rounded-3xl shadow-chunk-xl p-7 rotate-[1.6deg]">
