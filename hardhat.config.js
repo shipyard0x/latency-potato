@@ -1,3 +1,4 @@
+require('dotenv').config();
 require('@nomicfoundation/hardhat-ethers');
 require('@nomicfoundation/hardhat-chai-matchers');
 const { subtask } = require('hardhat/config');

@@ -19,9 +19,9 @@ export const robinhoodChain = defineChain({
 
 export const SEQUENCER_FEED_WS = 'wss://feed.mainnet.chain.robinhood.com';
 
-// Fill in after deployment:
-export const GAME_ADDRESS = '0x0000000000000000000000000000000000000000';
-export const TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
+// Deployed on Robinhood Chain mainnet, 2026-07-20:
+export const GAME_ADDRESS = '0xE9906122eef7C4aa465e0a1CD03E97cB639C0b06';
+export const TOKEN_ADDRESS = '0x227D7245A0498b4e90658b25F31ffe1a9Ab8261D';
 
 /// true once real deployed addresses are pasted above — all contract reads
 /// are disabled until then so the placeholder zero-address can never crash

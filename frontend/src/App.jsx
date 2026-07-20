@@ -35,7 +35,10 @@ export default function App() {
     (data ?? []).map((r) => r?.result);
 
   const jackpotFmt = jackpot != null ? Number(formatEther(jackpot)).toFixed(4) : '…';
-  const tickerItems = `JACKPOT ${jackpotFmt} ETH ◆ HOLDER ${short(holder)} ◆ ROUND #${round ?? '…'} ◆ BLOCKS EVERY 100MS ◆ `;
+  // Stringify for JSX: `round` is a BigInt, and React won't render a raw
+  // BigInt child (it comes out blank) — only template literals coerce it.
+  const roundLabel = round != null ? round.toString() : '…';
+  const tickerItems = `JACKPOT ${jackpotFmt} ETH ◆ HOLDER ${short(holder)} ◆ ROUND #${roundLabel} ◆ BLOCKS EVERY 100MS ◆ `;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -83,7 +86,7 @@ export default function App() {
       {/* ---------------------------------------------- hero */}
       <section id="play" className="w-full max-w-6xl mx-auto px-6 mt-4 grid grid-cols-1 lg:grid-cols-[1.3fr_.9fr] gap-9 items-center">
         <div>
-          <div className="micro">Round #{round ?? '…'} · live on Robinhood Chain</div>
+          <div className="micro">Round #{roundLabel} · live on Robinhood Chain</div>
           <h1 className="text-4xl md:text-[52px] leading-[1.05] font-bold tracking-tight mt-2">
             Don't hold the bag.<br />
             <span className="bg-butter px-2 rounded-md box-decoration-clone">Hold the potato.</span>
@@ -118,7 +121,7 @@ export default function App() {
           </div>
           <div className="p-5 md:border-r-[3px] border-ink">
             <div className="micro">Round</div>
-            <div className="text-3xl font-bold mt-1">#{round ?? '…'}</div>
+            <div className="text-3xl font-bold mt-1">#{roundLabel}</div>
           </div>
           <div className="p-5 md:border-r-[3px] border-ink">
             <div className="micro">Price</div>
